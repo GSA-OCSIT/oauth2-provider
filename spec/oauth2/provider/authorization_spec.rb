@@ -132,6 +132,19 @@ describe OAuth2::Provider::Authorization do
     end
   end
   
+  describe "with a redirect_uri with a query string" do
+    before do 
+      redirect_uri = "http://songkick.com/oauth?param=value"
+      @client.update_attribute(:redirect_uri, redirect_uri)
+      params['redirect_uri'] = redirect_uri
+    end
+    
+    it "is valid and properly constructs the redirect uri" do
+      authorization.error.should be_nil
+      authorization.redirect_uri.should == "http://songkick.com/oauth?param=value&"
+    end
+  end
+  
   # http://en.wikipedia.org/wiki/HTTP_response_splitting
   # scope and state values are passed back in the redirect
   
