@@ -27,6 +27,7 @@ module OAuth2
   ASSERTION              = 'assertion'
   ASSERTION_TYPE         = 'assertion_type'
   AUTHORIZATION_CODE     = 'authorization_code'
+  CLIENT_CREDENTIALS     = "client_credentials"
   CLIENT_ID              = 'client_id'
   CLIENT_SECRET          = 'client_secret'
   CODE                   = 'code'
@@ -66,6 +67,7 @@ module OAuth2
     
     def self.clear_assertion_handlers!
       @password_handler   = nil
+      @client_credentials_handler = nil
       @assertion_handlers = {}
       @assertion_filters  = []
     end
@@ -79,6 +81,15 @@ module OAuth2
     def self.handle_password(client, username, password)
       return nil unless @password_handler
       @password_handler.call(client, username, password)
+    end
+    
+    def self.handle_client_credentials(&block)
+      @client_credentials_handler = block
+    end
+
+    def self.handle_client_credential(client, owner, scopes)
+      return nil unless @client_credentials_handler
+      @client_credentials_handler.call(client, owner, scopes)
     end
     
     def self.filter_assertions(&filter)

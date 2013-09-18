@@ -268,6 +268,21 @@ provider side you can handle this using the <tt>handle_passwords</tt> and
 The block must return <tt>user.grant_access!(client)</tt> if you want to allow
 access, otherwise it should return <tt>nil</tt>.
 
+=== Using client credentials
+
+If you like, OAuth lets you use client credentials to authenticate with
+a provider. In this case the client application must post credentials to the exchange endpoint. On the
+provider side you can handle this using the <tt>handle_client_credentials</tt> and
+<tt>grant_access!</tt> API methods, for example:
+
+  OAuth2::Provider.handle_client_credentials do |client, owner, scopes|
+    owner.grant_access!(client, :scopes => scopes, :duration => 1.day)
+  end
+
+The block receives the <tt>Client</tt> making the request, the owner
+ and a <tt>Set</tt> of the requested scopes. It must return
+<tt>owner.grant_access!(client)</tt>
+
 
 === Using assertions
 
